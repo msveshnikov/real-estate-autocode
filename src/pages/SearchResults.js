@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from "react";
-import { Box, Container, Typography, Grid, Button, Pagination, useTheme, useMediaQuery } from "@mui/material";
+import { Box, Container, Typography, Grid, Pagination, useTheme, useMediaQuery } from "@mui/material";
 import PropertyCard from "../components/PropertyCard";
 import FilterOptions from "../components/FilterOptions";
 import SearchBar from "../components/SearchBar";
@@ -12,7 +12,6 @@ const SearchResults = () => {
     const [currentPage, setCurrentPage] = useState(1);
     const [totalPages, setTotalPages] = useState(1);
     const [searchTerm, setSearchTerm] = useState("");
-    const [filters, setFilters] = useState({});
     const [loading, setLoading] = useState(true);
     const location = useLocation();
     const navigate = useNavigate();
@@ -48,7 +47,6 @@ const SearchResults = () => {
     };
 
     const handleFilterChange = (newFilters) => {
-        setFilters(newFilters);
         const filtered = properties.filter((property) => {
             return Object.entries(newFilters).every(([key, value]) => {
                 if (!value) return true;

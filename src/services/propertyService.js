@@ -1,138 +1,121 @@
 // src/services/propertyService.js
 
-import axios from "axios";
-
-const API_URL = "https://api.example.com/properties";
+const mockProperties = [
+    {
+        id: 1,
+        title: "Modern Apartment",
+        description: "A beautiful modern apartment in the city center",
+        price: 250000,
+        bedrooms: 2,
+        bathrooms: 1,
+        area: 80,
+        address: "123 Main St, Cityville",
+        image: "https://example.com/apartment1.jpg",
+    },
+    {
+        id: 2,
+        title: "Cozy House",
+        description: "A cozy family house with a garden",
+        price: 350000,
+        bedrooms: 3,
+        bathrooms: 2,
+        area: 120,
+        address: "456 Oak Ave, Suburbia",
+        image: "https://example.com/house1.jpg",
+    },
+    // Add more mock properties here
+];
 
 const propertyService = {
     getAllProperties: async (page = 1, limit = 20) => {
-        try {
-            const response = await axios.get(`${API_URL}?page=${page}&limit=${limit}`);
-            return response.data;
-        } catch (error) {
-            console.error("Error fetching properties:", error);
-            throw error;
-        }
+        const start = (page - 1) * limit;
+        const end = start + limit;
+        return mockProperties.slice(start, end);
     },
 
     getPropertyById: async (id) => {
-        try {
-            const response = await axios.get(`${API_URL}/${id}`);
-            return response.data;
-        } catch (error) {
-            console.error(`Error fetching property with id ${id}:`, error);
-            throw error;
-        }
+        return mockProperties.find((property) => property.id === parseInt(id));
     },
 
     searchProperties: async (searchParams, page = 1, limit = 20) => {
-        try {
-            const response = await axios.get(`${API_URL}/search`, {
-                params: { ...searchParams, page, limit },
+        const filteredProperties = mockProperties.filter((property) => {
+            return Object.entries(searchParams).every(([key, value]) => {
+                if (key === "minPrice") return property.price >= value;
+                if (key === "maxPrice") return property.price <= value;
+                return property[key].toString().toLowerCase().includes(value.toLowerCase());
             });
-            return response.data;
-        } catch (error) {
-            console.error("Error searching properties:", error);
-            throw error;
-        }
+        });
+        const start = (page - 1) * limit;
+        const end = start + limit;
+        return filteredProperties.slice(start, end);
     },
 
     getFavoriteProperties: async (userId) => {
-        try {
-            const response = await axios.get(`${API_URL}/favorites/${userId}`);
-            return response.data;
-        } catch (error) {
-            console.error(`Error fetching favorite properties for user ${userId}:`, error);
-            throw error;
-        }
+        // In a real app, this would filter based on user's favorites
+        return mockProperties.slice(0, 3);
     },
 
     addFavoriteProperty: async (userId, propertyId) => {
-        try {
-            const response = await axios.post(`${API_URL}/favorites/${userId}`, { propertyId });
-            return response.data;
-        } catch (error) {
-            console.error(`Error adding property ${propertyId} to favorites for user ${userId}:`, error);
-            throw error;
-        }
+        // In a real app, this would add the property to user's favorites
+        return { success: true };
     },
 
     removeFavoriteProperty: async (userId, propertyId) => {
-        try {
-            const response = await axios.delete(`${API_URL}/favorites/${userId}/${propertyId}`);
-            return response.data;
-        } catch (error) {
-            console.error(`Error removing property ${propertyId} from favorites for user ${userId}:`, error);
-            throw error;
-        }
+        // In a real app, this would remove the property from user's favorites
+        return { success: true };
     },
 
     getFilteredProperties: async (filterOptions, page = 1, limit = 20) => {
-        try {
-            const response = await axios.get(`${API_URL}/filter`, {
-                params: { ...filterOptions, page, limit },
+        const filteredProperties = mockProperties.filter((property) => {
+            return Object.entries(filterOptions).every(([key, value]) => {
+                if (key === "minPrice") return property.price >= value;
+                if (key === "maxPrice") return property.price <= value;
+                if (key === "minBedrooms") return property.bedrooms >= value;
+                if (key === "minBathrooms") return property.bathrooms >= value;
+                if (key === "minArea") return property.area >= value;
+                return property[key] === value;
             });
-            return response.data;
-        } catch (error) {
-            console.error("Error fetching filtered properties:", error);
-            throw error;
-        }
+        });
+        const start = (page - 1) * limit;
+        const end = start + limit;
+        return filteredProperties.slice(start, end);
     },
 
     getSavedSearches: async (userId) => {
-        try {
-            const response = await axios.get(`${API_URL}/saved-searches/${userId}`);
-            return response.data;
-        } catch (error) {
-            console.error(`Error fetching saved searches for user ${userId}:`, error);
-            throw error;
-        }
+        // In a real app, this would return user's saved searches
+        return [
+            { id: 1, name: "City Center Apartments", criteria: { minBedrooms: 2, maxPrice: 300000 } },
+            { id: 2, name: "Suburban Houses", criteria: { minBedrooms: 3, minArea: 100 } },
+        ];
     },
 
     saveSearch: async (userId, searchCriteria) => {
-        try {
-            const response = await axios.post(`${API_URL}/saved-searches/${userId}`, searchCriteria);
-            return response.data;
-        } catch (error) {
-            console.error(`Error saving search for user ${userId}:`, error);
-            throw error;
-        }
+        // In a real app, this would save the search criteria for the user
+        return { id: Date.now(), name: "New Search", criteria: searchCriteria };
     },
 
     deleteSavedSearch: async (userId, searchId) => {
-        try {
-            const response = await axios.delete(`${API_URL}/saved-searches/${userId}/${searchId}`);
-            return response.data;
-        } catch (error) {
-            console.error(`Error deleting saved search ${searchId} for user ${userId}:`, error);
-            throw error;
-        }
+        // In a real app, this would delete the saved search
+        return { success: true };
     },
 
     getPropertyComparison: async (propertyIds) => {
-        try {
-            const response = await axios.get(`${API_URL}/compare`, {
-                params: { ids: propertyIds.join(",") },
-            });
-            return response.data;
-        } catch (error) {
-            console.error("Error fetching property comparison:", error);
-            throw error;
-        }
+        return propertyIds.map((id) => mockProperties.find((property) => property.id === parseInt(id)));
     },
 
     calculateMortgage: async (propertyId, downPayment, interestRate, loanTerm) => {
-        try {
-            const response = await axios.post(`${API_URL}/${propertyId}/mortgage-calculator`, {
-                downPayment,
-                interestRate,
-                loanTerm,
-            });
-            return response.data;
-        } catch (error) {
-            console.error(`Error calculating mortgage for property ${propertyId}:`, error);
-            throw error;
-        }
+        const property = mockProperties.find((p) => p.id === parseInt(propertyId));
+        const loanAmount = property.price - downPayment;
+        const monthlyInterest = interestRate / 100 / 12;
+        const numberOfPayments = loanTerm * 12;
+        const monthlyPayment =
+            (loanAmount * monthlyInterest * Math.pow(1 + monthlyInterest, numberOfPayments)) /
+            (Math.pow(1 + monthlyInterest, numberOfPayments) - 1);
+        return {
+            monthlyPayment: monthlyPayment.toFixed(2),
+            totalPayment: (monthlyPayment * numberOfPayments).toFixed(2),
+            totalInterest: (monthlyPayment * numberOfPayments - loanAmount).toFixed(2),
+        };
     },
 };
 
