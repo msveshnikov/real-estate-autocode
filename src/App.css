@@ -1,38 +1,122 @@
+/* App.css */
+
+:root {
+  --primary-color: #2196f3;
+  --text-color: #333;
+  --background-color: #fff;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  font-family: 'Roboto', sans-serif;
+  background-color: var(--background-color);
+  color: var(--text-color);
+}
+
 .App {
-  text-align: center;
-}
-
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
-}
-
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
-}
-
-.App-header {
-  background-color: #282c34;
   min-height: 100vh;
   display: flex;
   flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
+}
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 20px;
+}
+
+.header {
+  background-color: var(--primary-color);
   color: white;
+  padding: 1rem 0;
 }
 
-.App-link {
-  color: #61dafb;
+.nav-link {
+  color: white;
+  text-decoration: none;
+  margin-right: 1rem;
 }
 
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
+.nav-link:hover {
+  text-decoration: underline;
+}
+
+.property-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  gap: 1rem;
+  padding: 1rem 0;
+}
+
+.property-card {
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  overflow: hidden;
+  transition: box-shadow 0.3s ease;
+}
+
+.property-card:hover {
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.property-image {
+  width: 100%;
+  height: 200px;
+  object-fit: cover;
+}
+
+.property-details {
+  padding: 1rem;
+}
+
+.search-bar {
+  margin: 1rem 0;
+}
+
+.filter-options {
+  margin-bottom: 1rem;
+}
+
+.favorites-list {
+  margin-top: 2rem;
+}
+
+.auth-form {
+  max-width: 400px;
+  margin: 2rem auto;
+}
+
+@media (max-width: 768px) {
+  .property-list {
+    grid-template-columns: 1fr;
   }
-  to {
-    transform: rotate(360deg);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --text-color: #f0f0f0;
+    --background-color: #121212;
   }
+
+  .property-card {
+    border-color: #444;
+  }
+}
+
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.lazy-load-image-background {
+  width: 100%;
+  height: 100%;
 }
