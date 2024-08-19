@@ -1,20 +1,48 @@
-import React, { useState, useEffect } from "react";
-import { Box, Typography, Container, Grid, Button } from "@mui/material";
+import React, { useState, useEffect, lazy, Suspense } from "react";
+import { Box, Typography, Container, Grid, Button, Skeleton } from "@mui/material";
 import { Link } from "react-router-dom";
-import PropertyCard from "../components/PropertyCard";
 import SearchBar from "../components/SearchBar";
 import propertyService from "../services/propertyService";
 
+const PropertyCard = lazy(() => import("../components/PropertyCard"));
+
 const HomePage = () => {
     const [featuredProperties, setFeaturedProperties] = useState([]);
+    const [loading, setLoading] = useState(true);
 
     useEffect(() => {
         const fetchFeaturedProperties = async () => {
-            const properties = await propertyService.searchProperties({ featured: true, limit: 6 });
-            setFeaturedProperties(properties);
+            try {
+                const properties = await propertyService.searchProperties({ featured: true, limit: 6 });
+                setFeaturedProperties(properties);
+            } catch (error) {
+                console.error("Error fetching featured properties:", error);
+            } finally {
+                setLoading(false);
+            }
         };
         fetchFeaturedProperties();
     }, []);
+
+    const renderPropertyCards = () => {
+        if (loading) {
+            return Array.from(new Array(6)).map((_, index) => (
+                <Grid item xs={12} sm={6} md={4} key={index}>
+                    <Skeleton variant="rectangular" width="100%" height={200} />
+                    <Skeleton variant="text" width="80%" />
+                    <Skeleton variant="text" width="60%" />
+                </Grid>
+            ));
+        }
+
+        return featuredProperties.map((property) => (
+            <Grid item xs={12} sm={6} md={4} key={property.id}>
+                <Suspense fallback={<Skeleton variant="rectangular" width="100%" height={200} />}>
+                    <PropertyCard property={property} />
+                </Suspense>
+            </Grid>
+        ));
+    };
 
     return (
         <Box sx={{ flexGrow: 1 }}>
@@ -34,11 +62,7 @@ const HomePage = () => {
                     Featured Properties
                 </Typography>
                 <Grid container spacing={3}>
-                    {featuredProperties.map((property) => (
-                        <Grid item xs={12} sm={6} md={4} key={property.id}>
-                            <PropertyCard property={property} />
-                        </Grid>
-                    ))}
+                    {renderPropertyCards()}
                 </Grid>
                 <Box sx={{ mt: 4, textAlign: "center" }}>
                     <Button component={Link} to="/search" variant="contained" color="primary" size="large">

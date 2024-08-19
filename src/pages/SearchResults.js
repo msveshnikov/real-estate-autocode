@@ -1,9 +1,10 @@
-import React, { useState, useEffect } from "react";
-import { Box, Container, Typography, Grid, TextField, Button, Pagination } from "@mui/material";
+import React, { useState, useEffect, useCallback } from "react";
+import { Box, Container, Typography, Grid, Button, Pagination, useTheme, useMediaQuery } from "@mui/material";
 import PropertyCard from "../components/PropertyCard";
 import FilterOptions from "../components/FilterOptions";
+import SearchBar from "../components/SearchBar";
 import propertyService from "../services/propertyService";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 
 const SearchResults = () => {
     const [properties, setProperties] = useState([]);
@@ -11,27 +12,39 @@ const SearchResults = () => {
     const [currentPage, setCurrentPage] = useState(1);
     const [totalPages, setTotalPages] = useState(1);
     const [searchTerm, setSearchTerm] = useState("");
-    const [, setFilters] = useState({});
+    const [filters, setFilters] = useState({});
+    const [loading, setLoading] = useState(true);
     const location = useLocation();
+    const navigate = useNavigate();
+    const theme = useTheme();
+    const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
     const propertiesPerPage = 12;
+
+    const fetchProperties = useCallback(async (search) => {
+        setLoading(true);
+        try {
+            const fetchedProperties = await propertyService.searchProperties(search);
+            setProperties(fetchedProperties);
+            setFilteredProperties(fetchedProperties);
+            setTotalPages(Math.ceil(fetchedProperties.length / propertiesPerPage));
+        } catch (error) {
+            console.error("Error fetching properties:", error);
+        } finally {
+            setLoading(false);
+        }
+    }, []);
 
     useEffect(() => {
         const searchParams = new URLSearchParams(location.search);
         const initialSearchTerm = searchParams.get("q") || "";
         setSearchTerm(initialSearchTerm);
         fetchProperties(initialSearchTerm);
-    }, [location.search]);
+    }, [location.search, fetchProperties]);
 
-    const fetchProperties = async (search) => {
-        const fetchedProperties = await propertyService.searchProperties(search);
-        setProperties(fetchedProperties);
-        setFilteredProperties(fetchedProperties);
-        setTotalPages(Math.ceil(fetchedProperties.length / propertiesPerPage));
-    };
-
-    const handleSearch = (event) => {
-        event.preventDefault();
-        fetchProperties(searchTerm);
+    const handleSearch = (newSearchTerm) => {
+        setSearchTerm(newSearchTerm);
+        navigate(`/search?q=${encodeURIComponent(newSearchTerm)}`);
+        fetchProperties(newSearchTerm);
     };
 
     const handleFilterChange = (newFilters) => {
@@ -62,35 +75,40 @@ const SearchResults = () => {
                 <Typography variant="h4" component="h1" gutterBottom>
                     Search Results
                 </Typography>
-                <form onSubmit={handleSearch}>
-                    <TextField
-                        fullWidth
-                        variant="outlined"
-                        placeholder="Search properties..."
-                        value={searchTerm}
-                        onChange={(e) => setSearchTerm(e.target.value)}
-                        sx={{ mb: 2 }}
-                    />
-                    <Button type="submit" variant="contained" color="primary">
-                        Search
-                    </Button>
-                </form>
+                <SearchBar initialValue={searchTerm} onSearch={handleSearch} />
             </Box>
             <Grid container spacing={3}>
                 <Grid item xs={12} md={3}>
                     <FilterOptions onFilterChange={handleFilterChange} />
                 </Grid>
                 <Grid item xs={12} md={9}>
-                    <Grid container spacing={3}>
-                        {paginatedProperties.map((property) => (
-                            <Grid item xs={12} sm={6} md={4} key={property.id}>
-                                <PropertyCard property={property} />
+                    {loading ? (
+                        <Typography>Loading properties...</Typography>
+                    ) : (
+                        <>
+                            <Grid container spacing={3}>
+                                {paginatedProperties.map((property) => (
+                                    <Grid item xs={12} sm={6} md={4} key={property.id}>
+                                        <PropertyCard property={property} />
+                                    </Grid>
+                                ))}
                             </Grid>
-                        ))}
-                    </Grid>
-                    <Box mt={4} display="flex" justifyContent="center">
-                        <Pagination count={totalPages} page={currentPage} onChange={handlePageChange} color="primary" />
-                    </Box>
+                            {filteredProperties.length === 0 && (
+                                <Typography variant="body1" sx={{ mt: 2 }}>
+                                    No properties found matching your criteria.
+                                </Typography>
+                            )}
+                            <Box mt={4} display="flex" justifyContent="center">
+                                <Pagination
+                                    count={totalPages}
+                                    page={currentPage}
+                                    onChange={handlePageChange}
+                                    color="primary"
+                                    size={isMobile ? "small" : "medium"}
+                                />
+                            </Box>
+                        </>
+                    )}
                 </Grid>
             </Grid>
         </Container>

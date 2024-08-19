@@ -9,6 +9,7 @@ A Real Estate application with mocked data, built using React and Material-UI v5
 -   React
 -   React Router v6
 -   Material-UI v5
+-   Mock data instead of API calls!!!
 
 ## Branding
 
