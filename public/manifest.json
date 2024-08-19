@@ -22,9 +22,29 @@
     "display": "standalone",
     "theme_color": "#2196f3",
     "background_color": "#ffffff",
-    "description": "A Real Estate application with property listings, search, and user authentication",
-    "orientation": "portrait-primary",
+    "description": "A Real Estate application with property listings, search, filtering, and user authentication",
+    "orientation": "any",
     "categories": ["real estate", "property", "housing"],
     "lang": "en-US",
-    "prefer_related_applications": false
+    "prefer_related_applications": false,
+    "features": [
+        "Property listings",
+        "Property details",
+        "Search functionality",
+        "Filtering options",
+        "User authentication",
+        "Favorites/Saved properties"
+    ],
+    "screenshots": [
+        {
+            "src": "screenshot1.png",
+            "sizes": "1280x720",
+            "type": "image/png"
+        },
+        {
+            "src": "screenshot2.png",
+            "sizes": "1280x720",
+            "type": "image/png"
+        }
+    ]
 }

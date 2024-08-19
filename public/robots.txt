@@ -1,4 +1,8 @@
 User-agent: *
 Allow: /
 
+Disallow: /login
+Disallow: /register
+Disallow: /favorites
+
 Sitemap: https://www.example.com/sitemap.xml
