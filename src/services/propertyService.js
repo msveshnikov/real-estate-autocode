@@ -10,7 +10,7 @@ const mockProperties = [
         bathrooms: 1,
         area: 80,
         address: "123 Main St, Cityville",
-        image: "https://example.com/apartment1.jpg",
+        image: "https://plus.unsplash.com/premium_photo-1680382578857-c331ead9ed51?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTN8fHJlYWxlc3RhdGV8ZW58MHx8MHx8fDA%3D",
     },
     {
         id: 2,
@@ -21,7 +21,7 @@ const mockProperties = [
         bathrooms: 2,
         area: 120,
         address: "456 Oak Ave, Suburbia",
-        image: "https://example.com/house1.jpg",
+        image: "https://images.unsplash.com/photo-1601760562234-9814eea6663a?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTJ8fHJlYWxlc3RhdGV8ZW58MHx8MHx8fDA%3D",
     },
     // Add more mock properties here
 ];
@@ -51,17 +51,14 @@ const propertyService = {
     },
 
     getFavoriteProperties: async (userId) => {
-        // In a real app, this would filter based on user's favorites
         return mockProperties.slice(0, 3);
     },
 
     addFavoriteProperty: async (userId, propertyId) => {
-        // In a real app, this would add the property to user's favorites
         return { success: true };
     },
 
     removeFavoriteProperty: async (userId, propertyId) => {
-        // In a real app, this would remove the property from user's favorites
         return { success: true };
     },
 
@@ -82,7 +79,6 @@ const propertyService = {
     },
 
     getSavedSearches: async (userId) => {
-        // In a real app, this would return user's saved searches
         return [
             { id: 1, name: "City Center Apartments", criteria: { minBedrooms: 2, maxPrice: 300000 } },
             { id: 2, name: "Suburban Houses", criteria: { minBedrooms: 3, minArea: 100 } },
@@ -90,12 +86,10 @@ const propertyService = {
     },
 
     saveSearch: async (userId, searchCriteria) => {
-        // In a real app, this would save the search criteria for the user
         return { id: Date.now(), name: "New Search", criteria: searchCriteria };
     },
 
     deleteSavedSearch: async (userId, searchId) => {
-        // In a real app, this would delete the saved search
         return { success: true };
     },
 
