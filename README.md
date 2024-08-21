@@ -6,6 +6,10 @@
 
 A Real Estate application with mocked data, built using React and Material-UI v5.
 
+## DEMO
+
+https://real-estate-max.netlify.app/search
+
 ## Tech Stack
 
 -   React
